@@ -114,30 +114,65 @@
 // }
 
 //1
-const sliderInput = document.querySelector('.slider__input');
-const sliderImage = document.querySelector('.slider__image');
+// const sliderInput = document.querySelector('.slider__input');
+// const sliderImage = document.querySelector('.slider__image');
 
-const image = (value) => {
-  const scale = value / 50;
-  sliderImage.style.transform = `scale(${scale})`;
+// const image = (value) => {
+//   const scale = value / 50;
+//   sliderImage.style.transform = `scale(${scale})`;
+// };
+
+// const debouncedResize = _.debounce((event) => {
+//   image(event.target.value);
+// }, 100);
+
+// sliderInput.addEventListener('input', debouncedResize);
+
+// //2
+// const box = document.getElementById('box');
+
+// const itemBox = (x, y) => {
+//   box.style.left = `${x}px`;
+//   box.style.top = `${y}px`;
+// };
+
+// const debouncedMove = _.debounce((event) => {
+//   moveBox(event.clientX, event.clientY);
+// }, 100);
+
+// document.addEventListener('mousemove', debouncedMove);
+
+const image = document.querySelectorAll('img[data-src]');
+const loadedWebpBtn = document.getElementById('load-webp-btn');
+
+const loadImage = (image, isWebp = false) => {
+    const src = isWebp ? image.dataset.srcWebp : image.dataset.src;
+    image.src = src;
+
+    image.addEventListener('load', () => {
+        image.classList.add('loaded');
+    })
 };
 
-const debouncedResize = _.debounce((event) => {
-  image(event.target.value);
-}, 100);
-
-sliderInput.addEventListener('input', debouncedResize);
-
-//2
-const box = document.getElementById('box');
-
-const itemBox = (x, y) => {
-  box.style.left = `${x}px`;
-  box.style.top = `${y}px`;
+const options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.15
 };
 
-const debouncedMove = _.debounce((event) => {
-  moveBox(event.clientX, event.clientY);
-}, 100);
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            loadImage(entry.target);
+        }
+    })
+}, options);
 
-document.addEventListener('mousemove', debouncedMove);
+image.forEach(image => observer.observe(image));
+
+loadedWebpBtn.addEventListener('click', () => {
+    image.forEach(image => {
+        loadImage(image, true);
+        observer.unobserve(image);
+    })
+})
