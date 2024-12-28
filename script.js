@@ -142,37 +142,115 @@
 
 // document.addEventListener('mousemove', debouncedMove);
 
-const image = document.querySelectorAll('img[data-src]');
-const loadedWebpBtn = document.getElementById('load-webp-btn');
+// const image = document.querySelectorAll('img[data-src]');
+// const loadedWebpBtn = document.getElementById('load-webp-btn');
 
-const loadImage = (image, isWebp = false) => {
-    const src = isWebp ? image.dataset.srcWebp : image.dataset.src;
-    image.src = src;
+// const loadImage = (image, isWebp = false) => {
+//     const src = isWebp ? image.dataset.srcWebp : image.dataset.src;
+//     image.src = src;
 
-    image.addEventListener('load', () => {
-        image.classList.add('loaded');
-    })
-};
+//     image.addEventListener('load', () => {
+//         image.classList.add('loaded');
+//     })
+// };
 
-const options = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.15
-};
+// const options = {
+//     root: null,
+//     rootMargin: '0px',
+//     threshold: 0.15
+// };
 
-const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            loadImage(entry.target);
-        }
-    })
-}, options);
+// const observer = new IntersectionObserver((entries, observer) => {
+//     entries.forEach(entry => {
+//         if (entry.isIntersecting) {
+//             loadImage(entry.target);
+//         }
+//     })
+// }, options);
 
-image.forEach(image => observer.observe(image));
+// image.forEach(image => observer.observe(image));
 
-loadedWebpBtn.addEventListener('click', () => {
-    image.forEach(image => {
-        loadImage(image, true);
-        observer.unobserve(image);
-    })
-})
+// loadedWebpBtn.addEventListener('click', () => {
+//     image.forEach(image => {
+//         loadImage(image, true);
+//         observer.unobserve(image);
+//     })
+// })
+
+// Завдання 1: Гра "Натисни правильну клавішу"
+
+const keys = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm'];
+let currentKeyIndex = 0;
+
+const keyElement = document.getElementById('key');
+const newGameButton = document.getElementById('new-game');
+
+function startGame() {
+  currentKeyIndex = Math.floor(Math.random() * keys.length);
+  keyElement.textContent = keys[currentKeyIndex];
+  PNotify.success({ text: 'Гру розпочато! Натисніть правильну клавішу.' });
+}
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === keys[currentKeyIndex]) {
+    PNotify.success({ text: 'Правильно!' });
+    currentKeyIndex = Math.floor(Math.random() * keys.length);
+    keyElement.textContent = keys[currentKeyIndex];
+  } else {
+    PNotify.error({ text: 'Неправильна клавіша. Спробуйте ще раз.' });
+  }
+});
+
+window.addEventListener('keypress', (event) => {
+  event.preventDefault();
+});
+
+newGameButton.addEventListener('click', startGame);
+
+startGame();
+
+// Завдання 2: Графік статистики продажів
+
+const chartData = {
+    labels: Array.from({ length: 30 }, (_, i) => (i + 1).toString()),
+    datasets: [
+      {
+        label: "Продажі за останній місяць",
+        data: [150, 220, 180, 200, 250, 300, 280, 350, 400, 380, 420, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350],
+        backgroundColor: "rgba(33, 150, 243, 0.5)",
+        borderColor: "#2196f3",
+        borderWidth: 2,
+        fill: true,
+      },
+    ],
+  };
+
+  const config = {
+    type: "line",
+    data: chartData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Дні місяця',
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Продажі (грн)',
+          },
+        },
+      },
+    },
+  };
+
+  const ctx = document.getElementById("sales-chart").getContext("2d");
+  new Chart(ctx, config);
