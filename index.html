@@ -7,7 +7,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/5.2.0/PNotify.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/5.2.0/PNotifyBrightTheme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/5.2.0/PNotifyBrightTheme.css">
 </head>
 
 <body>
@@ -451,29 +451,58 @@
         </div>
 
          Завдання 1: Гра "Натисни правильну клавішу" -->
-        <!-- <h1>Натисни правильну клавішу</h1>
+    <!-- <h1>Натисни правильну клавішу</h1>
         <p>Натисніть клавішу: <span id="key"></span></p>
         <button id="new-game">Нова гра</button> -->
 
-        <!-- Завдання 2: Графік статистики продажів -->
-        <!-- <h1>Статистика продажів за останній місяць</h1>
+    <!-- Завдання 2: Графік статистики продажів -->
+    <!-- <h1>Статистика продажів за останній місяць</h1>
         <canvas id="sales-chart" width="600" height="400"></canvas> -->
 
-        <!-- 4 Завдання -->
-         <!-- <h1>Timer</h1>
+    <!-- 4 Завдання -->
+    <!-- <h1>Timer</h1>
          <input type="number" id="timeInput" placeholder="Введіть час в секундах" min="1">
          <div id="output"></div> -->
 
-         <!-- 3 -->
-          <!-- <div id="score">бали: 0</div>
+    <!-- 3 -->
+    <!-- <div id="score">бали: 0</div>
           <div id="gameArea"></div> -->
 
-          <!-- 2 -->
-          <div id="box1" class="box"></div>
-          <div id="box2" class="box" style="background-color: blue;"></div>
-           
+    <!-- 2 -->
+    <!-- <div id="box1" class="box"></div>
+          <div id="box2" class="box" style="background-color: blue;"></div> -->
 
-        <script async src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-        <script src="script.js"></script>
+    <h2>Список задач (ToDo List)</h2>
+    <input type="text" id="taskInput" placeholder="Нова задача">
+    <button onclick="addTask()">Додати</button>
+    <ul id="taskList"></ul>
+
+    <h2>Форма збереження даних</h2>
+    <input type="text" id="nameInput" placeholder="Ваше ім'я">
+    <button onclick="saveName()">Зберегти</button>
+    <p id="savedName"></p>
+
+    <h2>Форма авторизації</h2>
+    <input type="text" id="login" placeholder="Логін">
+    <input type="password" id="password" placeholder="Пароль">
+    <button onclick="registerUser()">Зареєструвати</button>
+    <button onclick="loginUser()">Увійти</button>
+    <p id="authStatus"></p>
+
+    <h2>Закладки</h2>
+    <input type="text" id="bookmarkInput" placeholder="URL">
+    <button onclick="addBookmark()">Додати</button>
+    <ul id="bookmarkList"></ul>
+
+    <h2>Контакти</h2>
+    <input type="text" id="contactName" placeholder="Ім'я">
+    <input type="text" id="contactPhone" placeholder="Телефон">
+    <button onclick="addContact()">Додати</button>
+    <ul id="contactList"></ul>
+
+
+    <script async src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

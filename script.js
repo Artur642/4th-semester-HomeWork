@@ -328,21 +328,105 @@
 //       }
 //     }, 1000);
 
-    //2
-    function animateElement(element, property, value, step, max) {
-      let current = parseInt(getComputedStyle(element)[property], 10) || 0;
-      const interval = setInterval(() => {
-        if (Math.abs(current - value) >= max) {
-          clearInterval(interval);
-        } else {
-          current += step;
-          element.style[property] = current + 'px';
-        }
-      }, 100);
-    }
+//2
+// function animateElement(element, property, value, step, max) {
+//   let current = parseInt(getComputedStyle(element)[property], 10) || 0;
+//   const interval = setInterval(() => {
+//     if (Math.abs(current - value) >= max) {
+//       clearInterval(interval);
+//     } else {
+//       current += step;
+//       element.style[property] = current + 'px';
+//     }
+//   }, 100);
+// }
 
-    const box1 = document.getElementById('box1');
-    const box2 = document.getElementById('box2');
+// const box1 = document.getElementById('box1');
+// const box2 = document.getElementById('box2');
 
-    animateElement(box1, 'left', 300, 10, 300);
-    animateElement(box2, 'top', 200, 5, 200);
+// animateElement(box1, 'left', 300, 10, 300);
+// animateElement(box2, 'top', 200, 5, 200);
+
+// Завдання 1: ToDo List
+function loadTasks() {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  let list = document.getElementById("taskList");
+  list.innerHTML = "";
+  tasks.forEach((task, index) => {
+    let li = document.createElement("li");
+    li.textContent = task.text;
+    if (task.done) li.classList.add("task-done");
+    li.onclick = () => toggleTask(index);
+    list.appendChild(li);
+  });
+}
+function addTask() {
+  let taskText = document.getElementById("taskInput").value;
+  if (!taskText) return;
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks.push({ text: taskText, done: false });
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  loadTasks();
+}
+function toggleTask(index) {
+  let tasks = JSON.parse(localStorage.getItem("tasks"));
+  tasks[index].done = !tasks[index].done;
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  loadTasks();
+}
+loadTasks();
+
+// Завдання 3: Закладки
+function loadBookmarks() {
+  let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+  let list = document.getElementById("bookmarkList");
+  list.innerHTML = "";
+  bookmarks.forEach((url, index) => {
+    let li = document.createElement("li");
+    li.innerHTML = `<a href="${url}" target="_blank">${url}</a> <button onclick="deleteBookmark(${index})">❌</button>`;
+    list.appendChild(li);
+  });
+}
+function addBookmark() {
+  let url = document.getElementById("bookmarkInput").value;
+  if (!url) return;
+  let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+  bookmarks.push(url);
+  localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+  loadBookmarks();
+}
+function deleteBookmark(index) {
+  let bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+  bookmarks.splice(index, 1);
+  localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+  loadBookmarks();
+}
+loadBookmarks();
+
+// Завдання 4: Контакти
+function loadContacts() {
+  let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+  let list = document.getElementById("contactList");
+  list.innerHTML = "";
+  contacts.forEach((contact, index) => {
+    let li = document.createElement("li");
+    li.textContent = `${contact.name}: ${contact.phone}`;
+    li.innerHTML += ` <button onclick="deleteContact(${index})">❌</button>`;
+    list.appendChild(li);
+  });
+}
+function addContact() {
+  let name = document.getElementById("contactName").value;
+  let phone = document.getElementById("contactPhone").value;
+  let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+  contacts.push({ name, phone });
+  localStorage.setItem("contacts", JSON.stringify(contacts));
+  loadContacts();
+}
+function deleteContact(index) {
+  let contacts = JSON.parse(localStorage.getItem("contacts"));
+  contacts.splice(index, 1);
+  localStorage.setItem("contacts", JSON.stringify(contacts));
+  loadContacts();
+}
+loadContacts();
