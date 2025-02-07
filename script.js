@@ -431,43 +431,96 @@
 // }
 // loadContacts();
 
-// Завдання 1
-function startHourTimer() {
-  let timeLeft = 60;
-  const timerInterval = setInterval(() => {
-      timeLeft--;
-      console.log(`Залишилось: ${timeLeft} хвилин`);
-      
-      if (timeLeft === 30) {
-          alert('Залишилось менше половини часу!');
-      }
-      
-      if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          console.log('Час вийшов!');
-      }
-  }, 60000);
-}
+// // Завдання 1
+// function startHourTimer() {
+//   let timeLeft = 60;
+//   const timerInterval = setInterval(() => {
+//       timeLeft--;
+//       console.log(`Залишилось: ${timeLeft} хвилин`);
 
-// Завдання 2
-function startFastTimer() {
-  let timeLeft = 30000;
-  const timerInterval = setInterval(() => {
-      timeLeft -= 1;
-      console.log(`Залишилось: ${(timeLeft / 1000).toFixed(2)} секунд`);
-      
-      if (timeLeft === 10000) {
-          document.body.classList.add('animate');
-      }
-      
-      if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById('restartBtn').disabled = false;
-          console.log('Час вийшов!');
-      }
-  }, 1);
-}
+//       if (timeLeft === 30) {
+//           alert('Залишилось менше половини часу!');
+//       }
 
-document.body.innerHTML += '<button id="restartBtn" onclick="startFastTimer()">Почати знову</button>';
+//       if (timeLeft <= 0) {
+//           clearInterval(timerInterval);
+//           console.log('Час вийшов!');
+//       }
+//   }, 60000);
+// }
 
-startHourTimer();
+// // Завдання 2
+// function startFastTimer() {
+//   let timeLeft = 30000;
+//   const timerInterval = setInterval(() => {
+//       timeLeft -= 1;
+//       console.log(`Залишилось: ${(timeLeft / 1000).toFixed(2)} секунд`);
+
+//       if (timeLeft === 10000) {
+//           document.body.classList.add('animate');
+//       }
+
+//       if (timeLeft <= 0) {
+//           clearInterval(timerInterval);
+//           document.getElementById('restartBtn').disabled = false;
+//           console.log('Час вийшов!');
+//       }
+//   }, 1);
+// }
+
+// document.body.innerHTML += '<button id="restartBtn" onclick="startFastTimer()">Почати знову</button>';
+
+// startHourTimer();
+
+class CountdownTimer {
+    constructor({ selector, targetDate }) {
+        this.selector = selector;
+        this.targetDate = targetDate;
+        
+        this.refs = {
+            days: document.querySelector(`${selector} [data-value="days"]`),
+            hours: document.querySelector(`${selector} [data-value="hours"]`),
+            mins: document.querySelector(`${selector} [data-value="mins"]`),
+            secs: document.querySelector(`${selector} [data-value="secs"]`)
+        };
+
+        if (!this.refs.days || !this.refs.hours || !this.refs.mins || !this.refs.secs) {
+            console.error("Помилка: не вдалося знайти таймер за селектором", selector);
+            return;
+        }
+
+        this.start();
+    }
+
+    start() {
+        this.updateTimer();
+        this.interval = setInterval(() => this.updateTimer(), 1000);
+    }
+
+    updateTimer() {
+        const time = this.targetDate - new Date();
+        if (time <= 0) {
+            clearInterval(this.interval);
+            this.refs.days.textContent = "00";
+            this.refs.hours.textContent = "00";
+            this.refs.mins.textContent = "00";
+            this.refs.secs.textContent = "00";
+            return;
+        }
+        
+        const days = Math.floor(time / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((time % (1000 * 60)) / 1000);
+
+        this.refs.days.textContent = String(days).padStart(2, '0');
+        this.refs.hours.textContent = String(hours).padStart(2, '0');
+        this.refs.mins.textContent = String(mins).padStart(2, '0');
+        this.refs.secs.textContent = String(secs).padStart(2, '0');
+    }
+};
+
+new CountdownTimer({
+    selector: '#timer-1',
+    targetDate: new Date('February 8, 2025'),
+});
