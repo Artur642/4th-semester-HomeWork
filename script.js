@@ -472,55 +472,133 @@
 
 // startHourTimer();
 
-class CountdownTimer {
-    constructor({ selector, targetDate }) {
-        this.selector = selector;
-        this.targetDate = targetDate;
+// class CountdownTimer {
+//     constructor({ selector, targetDate }) {
+//         this.selector = selector;
+//         this.targetDate = targetDate;
         
-        this.refs = {
-            days: document.querySelector(`${selector} [data-value="days"]`),
-            hours: document.querySelector(`${selector} [data-value="hours"]`),
-            mins: document.querySelector(`${selector} [data-value="mins"]`),
-            secs: document.querySelector(`${selector} [data-value="secs"]`)
-        };
+//         this.refs = {
+//             days: document.querySelector(`${selector} [data-value="days"]`),
+//             hours: document.querySelector(`${selector} [data-value="hours"]`),
+//             mins: document.querySelector(`${selector} [data-value="mins"]`),
+//             secs: document.querySelector(`${selector} [data-value="secs"]`)
+//         };
 
-        if (!this.refs.days || !this.refs.hours || !this.refs.mins || !this.refs.secs) {
-            console.error("Помилка: не вдалося знайти таймер за селектором", selector);
-            return;
-        }
+//         if (!this.refs.days || !this.refs.hours || !this.refs.mins || !this.refs.secs) {
+//             console.error("Помилка: не вдалося знайти таймер за селектором", selector);
+//             return;
+//         }
 
-        this.start();
-    }
+//         this.start();
+//     }
 
-    start() {
-        this.updateTimer();
-        this.interval = setInterval(() => this.updateTimer(), 1000);
-    }
+//     start() {
+//         this.updateTimer();
+//         this.interval = setInterval(() => this.updateTimer(), 1000);
+//     }
 
-    updateTimer() {
-        const time = this.targetDate - new Date();
-        if (time <= 0) {
-            clearInterval(this.interval);
-            this.refs.days.textContent = "00";
-            this.refs.hours.textContent = "00";
-            this.refs.mins.textContent = "00";
-            this.refs.secs.textContent = "00";
-            return;
-        }
+//     updateTimer() {
+//         const time = this.targetDate - new Date();
+//         if (time <= 0) {
+//             clearInterval(this.interval);
+//             this.refs.days.textContent = "00";
+//             this.refs.hours.textContent = "00";
+//             this.refs.mins.textContent = "00";
+//             this.refs.secs.textContent = "00";
+//             return;
+//         }
         
-        const days = Math.floor(time / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((time % (1000 * 60)) / 1000);
+//         const days = Math.floor(time / (1000 * 60 * 60 * 24));
+//         const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+//         const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+//         const secs = Math.floor((time % (1000 * 60)) / 1000);
 
-        this.refs.days.textContent = String(days).padStart(2, '0');
-        this.refs.hours.textContent = String(hours).padStart(2, '0');
-        this.refs.mins.textContent = String(mins).padStart(2, '0');
-        this.refs.secs.textContent = String(secs).padStart(2, '0');
-    }
-};
+//         this.refs.days.textContent = String(days).padStart(2, '0');
+//         this.refs.hours.textContent = String(hours).padStart(2, '0');
+//         this.refs.mins.textContent = String(mins).padStart(2, '0');
+//         this.refs.secs.textContent = String(secs).padStart(2, '0');
+//     }
+// };
 
-new CountdownTimer({
-    selector: '#timer-1',
-    targetDate: new Date('February 8, 2025'),
-});
+// new CountdownTimer({
+//     selector: '#timer-1',
+//     targetDate: new Date('February 8, 2025'),
+// });
+
+// 1
+// const delay = ms => {
+//     return new Promise(resolve => setTimeout(() => resolve(ms), ms));
+// };
+
+// const logger = time => console.log(`Resolved after ${time}ms`);
+
+// delay(2000).then(logger);
+// delay(1000).then(logger);
+// delay(1500).then(logger);
+
+// 2
+// const users = [
+//     { name: 'Mango', active: true },
+//     { name: 'Poly', active: false },
+//     { name: 'Ajax', active: true },
+//     { name: 'Lux', active: false },
+//   ];
+  
+//   const toggleUserState = (allUsers, userName) => {
+//     return new Promise(resolve => {
+//       const updatedUsers = allUsers.map(user =>
+//         user.name === userName ? { ...user, active: !user.active } : user
+//       );
+//       resolve(updatedUsers);
+//     });
+//   };
+  
+//   const logger = updatedUsers => console.table(updatedUsers);
+  
+//   toggleUserState(users, 'Mango').then(logger);
+//   toggleUserState(users, 'Lux').then(logger);
+
+// 3
+const randomIntegerFromInterval = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+  
+  const makeTransaction = (transaction) => {
+    const delay = randomIntegerFromInterval(200, 500);
+    
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const canProcess = Math.random() > 0.3;
+        
+        if (canProcess) {
+          resolve({ id: transaction.id, time: delay });
+        } else {
+          reject(transaction.id);
+        }
+      }, delay);
+    });
+  };
+  
+  const logSuccess = ({ id, time }) => {
+    console.log(`Transaction ${id} processed in ${time}ms`);
+  };
+  
+  const logError = id => {
+    console.warn(`Error processing transaction ${id}. Please try again later.`);
+  };
+  
+  makeTransaction({ id: 70, amount: 150 })
+    .then(logSuccess)
+    .catch(logError);
+  
+  makeTransaction({ id: 71, amount: 230 })
+    .then(logSuccess)
+    .catch(logError);
+  
+  makeTransaction({ id: 72, amount: 75 })
+    .then(logSuccess)
+    .catch(logError);
+  
+  makeTransaction({ id: 73, amount: 100 })
+    .then(logSuccess)
+    .catch(logError);
