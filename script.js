@@ -559,46 +559,87 @@
 //   toggleUserState(users, 'Lux').then(logger);
 
 // 3
-const randomIntegerFromInterval = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  };
+// const randomIntegerFromInterval = (min, max) => {
+//     return Math.floor(Math.random() * (max - min + 1) + min);
+//   };
   
-  const makeTransaction = (transaction) => {
-    const delay = randomIntegerFromInterval(200, 500);
+//   const makeTransaction = (transaction) => {
+//     const delay = randomIntegerFromInterval(200, 500);
     
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const canProcess = Math.random() > 0.3;
+//     return new Promise((resolve, reject) => {
+//       setTimeout(() => {
+//         const canProcess = Math.random() > 0.3;
         
-        if (canProcess) {
-          resolve({ id: transaction.id, time: delay });
-        } else {
-          reject(transaction.id);
-        }
-      }, delay);
-    });
-  };
+//         if (canProcess) {
+//           resolve({ id: transaction.id, time: delay });
+//         } else {
+//           reject(transaction.id);
+//         }
+//       }, delay);
+//     });
+//   };
   
-  const logSuccess = ({ id, time }) => {
-    console.log(`Transaction ${id} processed in ${time}ms`);
-  };
+//   const logSuccess = ({ id, time }) => {
+//     console.log(`Transaction ${id} processed in ${time}ms`);
+//   };
   
-  const logError = id => {
-    console.warn(`Error processing transaction ${id}. Please try again later.`);
-  };
+//   const logError = id => {
+//     console.warn(`Error processing transaction ${id}. Please try again later.`);
+//   };
   
-  makeTransaction({ id: 70, amount: 150 })
-    .then(logSuccess)
-    .catch(logError);
+//   makeTransaction({ id: 70, amount: 150 })
+//     .then(logSuccess)
+//     .catch(logError);
   
-  makeTransaction({ id: 71, amount: 230 })
-    .then(logSuccess)
-    .catch(logError);
+//   makeTransaction({ id: 71, amount: 230 })
+//     .then(logSuccess)
+//     .catch(logError);
   
-  makeTransaction({ id: 72, amount: 75 })
-    .then(logSuccess)
-    .catch(logError);
+//   makeTransaction({ id: 72, amount: 75 })
+//     .then(logSuccess)
+//     .catch(logError);
   
-  makeTransaction({ id: 73, amount: 100 })
-    .then(logSuccess)
-    .catch(logError);
+//   makeTransaction({ id: 73, amount: 100 })
+//     .then(logSuccess)
+//     .catch(logError);
+
+// 1
+// function delayedPromise(value, delay) {
+//   return new Promise(resolve => {
+//       setTimeout(() => resolve(value), delay);
+//   });
+// }
+
+// const promises = [
+//   delayedPromise("A", 1000),
+//   delayedPromise("B", 500),
+//   delayedPromise("C", 1500),
+//   delayedPromise("D", 200),
+//   delayedPromise("E", 1200)
+// ];
+
+// Promise.all(promises)
+//   .then(results => {
+//       console.log("Усі проміси вирішені:", results);
+//   })
+//   .catch(error => {
+//       console.error("Помилка в одному з промісів:", error);
+// });
+
+// 2
+function randomDelay(value) {
+  const delay = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
+  return new Promise(resolve => setTimeout(() => resolve(value), delay));
+}
+
+const promises = [
+  randomDelay("A"),
+  randomDelay("B"),
+  randomDelay("C"),
+  randomDelay("D"),
+  randomDelay("E")
+];
+
+Promise.race(promises)
+  .then(result => console.log("Найшвидший проміс вирішився з результатом:", result))
+  .catch(error => console.error("Помилка у промісі:", error));
