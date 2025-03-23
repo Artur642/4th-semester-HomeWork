@@ -627,19 +627,60 @@
 // });
 
 // 2
-function randomDelay(value) {
-  const delay = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
-  return new Promise(resolve => setTimeout(() => resolve(value), delay));
+// function randomDelay(value) {
+//   const delay = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
+//   return new Promise(resolve => setTimeout(() => resolve(value), delay));
+// }
+
+// const promises = [
+//   randomDelay("A"),
+//   randomDelay("B"),
+//   randomDelay("C"),
+//   randomDelay("D"),
+//   randomDelay("E")
+// ];
+
+// Promise.race(promises)
+//   .then(result => console.log("Найшвидший проміс вирішився з результатом:", result))
+//   .catch(error => console.error("Помилка у промісі:", error));
+
+const apiKey = 'YOUR_ACTUAL_API_KEY';
+const imageGallery = document.getElementById('image-gallery');
+const loadMoreBtn = document.getElementById('load-more-btn');
+let currentPage = 1;
+const perPage = 10;
+
+async function fetchImages(page) {
+    const url = `https://pixabay.com/api/?key=${apiKey}&editors_choice=true&per_page=${perPage}&page=${page}`;
+    
+    try {
+        console.log("Fetching URL:", url);
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.hits;
+    } catch (error) {
+        console.error("Error fetching data:", error.message || error);
+        return [];
+    }
 }
 
-const promises = [
-  randomDelay("A"),
-  randomDelay("B"),
-  randomDelay("C"),
-  randomDelay("D"),
-  randomDelay("E")
-];
+async function loadImages() {
+    const images = await fetchImages(currentPage);
+    images.forEach(image => {
+        const imgElement = document.createElement('img');
+        imgElement.src = image.webformatURL;
+        imgElement.alt = image.tags;
+        imageGallery.appendChild(imgElement);
+    });
+    currentPage++;
+}
 
-Promise.race(promises)
-  .then(result => console.log("Найшвидший проміс вирішився з результатом:", result))
-  .catch(error => console.error("Помилка у промісі:", error));
+document.addEventListener('DOMContentLoaded', () => {
+    loadImages();
+    loadMoreBtn.addEventListener('click', loadImages); 
+});
