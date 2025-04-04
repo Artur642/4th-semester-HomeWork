@@ -476,7 +476,7 @@
 //     constructor({ selector, targetDate }) {
 //         this.selector = selector;
 //         this.targetDate = targetDate;
-        
+
 //         this.refs = {
 //             days: document.querySelector(`${selector} [data-value="days"]`),
 //             hours: document.querySelector(`${selector} [data-value="hours"]`),
@@ -507,7 +507,7 @@
 //             this.refs.secs.textContent = "00";
 //             return;
 //         }
-        
+
 //         const days = Math.floor(time / (1000 * 60 * 60 * 24));
 //         const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 //         const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
@@ -543,7 +543,7 @@
 //     { name: 'Ajax', active: true },
 //     { name: 'Lux', active: false },
 //   ];
-  
+
 //   const toggleUserState = (allUsers, userName) => {
 //     return new Promise(resolve => {
 //       const updatedUsers = allUsers.map(user =>
@@ -552,9 +552,9 @@
 //       resolve(updatedUsers);
 //     });
 //   };
-  
+
 //   const logger = updatedUsers => console.table(updatedUsers);
-  
+
 //   toggleUserState(users, 'Mango').then(logger);
 //   toggleUserState(users, 'Lux').then(logger);
 
@@ -562,14 +562,14 @@
 // const randomIntegerFromInterval = (min, max) => {
 //     return Math.floor(Math.random() * (max - min + 1) + min);
 //   };
-  
+
 //   const makeTransaction = (transaction) => {
 //     const delay = randomIntegerFromInterval(200, 500);
-    
+
 //     return new Promise((resolve, reject) => {
 //       setTimeout(() => {
 //         const canProcess = Math.random() > 0.3;
-        
+
 //         if (canProcess) {
 //           resolve({ id: transaction.id, time: delay });
 //         } else {
@@ -578,27 +578,27 @@
 //       }, delay);
 //     });
 //   };
-  
+
 //   const logSuccess = ({ id, time }) => {
 //     console.log(`Transaction ${id} processed in ${time}ms`);
 //   };
-  
+
 //   const logError = id => {
 //     console.warn(`Error processing transaction ${id}. Please try again later.`);
 //   };
-  
+
 //   makeTransaction({ id: 70, amount: 150 })
 //     .then(logSuccess)
 //     .catch(logError);
-  
+
 //   makeTransaction({ id: 71, amount: 230 })
 //     .then(logSuccess)
 //     .catch(logError);
-  
+
 //   makeTransaction({ id: 72, amount: 75 })
 //     .then(logSuccess)
 //     .catch(logError);
-  
+
 //   makeTransaction({ id: 73, amount: 100 })
 //     .then(logSuccess)
 //     .catch(logError);
@@ -644,43 +644,99 @@
 //   .then(result => console.log("Найшвидший проміс вирішився з результатом:", result))
 //   .catch(error => console.error("Помилка у промісі:", error));
 
-const apiKey = 'YOUR_ACTUAL_API_KEY';
-const imageGallery = document.getElementById('image-gallery');
-const loadMoreBtn = document.getElementById('load-more-btn');
-let currentPage = 1;
-const perPage = 10;
+// const apiKey = 'YOUR_ACTUAL_API_KEY';
+// const imageGallery = document.getElementById('image-gallery');
+// const loadMoreBtn = document.getElementById('load-more-btn');
+// let currentPage = 1;
+// const perPage = 10;
 
-async function fetchImages(page) {
-    const url = `https://pixabay.com/api/?key=${apiKey}&editors_choice=true&per_page=${perPage}&page=${page}`;
-    
-    try {
-        console.log("Fetching URL:", url);
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        return data.hits;
-    } catch (error) {
-        console.error("Error fetching data:", error.message || error);
-        return [];
+// async function fetchImages(page) {
+//     const url = `https://pixabay.com/api/?key=${apiKey}&editors_choice=true&per_page=${perPage}&page=${page}`;
+
+//     try {
+//         console.log("Fetching URL:", url);
+//         const response = await fetch(url);
+
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! Status: ${response.status}`);
+//         }
+
+//         const data = await response.json();
+//         return data.hits;
+//     } catch (error) {
+//         console.error("Error fetching data:", error.message || error);
+//         return [];
+//     }
+// }
+
+// async function loadImages() {
+//     const images = await fetchImages(currentPage);
+//     images.forEach(image => {
+//         const imgElement = document.createElement('img');
+//         imgElement.src = image.webformatURL;
+//         imgElement.alt = image.tags;
+//         imageGallery.appendChild(imgElement);
+//     });
+//     currentPage++;
+// }
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     loadImages();
+//     loadMoreBtn.addEventListener('click', loadImages); 
+// });
+
+
+//hw16
+const countryInput = document.getElementById("country");
+const list = document.getElementById("countries-list");
+
+countryInput.addEventListener('input', _.debounce(() => {
+    const country = countryInput.value.trim();
+    if (country.length < 2) {
+        alert('Введіть більше символів');
+        return;
     }
+    renderCountry(country);
+}, 1000))
+
+function renderCountry(country) {
+    fetch(`https://restcountries.com/v3.1/name/${country}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Такої країни не існує')
+            }
+            return response.json();
+        })
+        .then(data => {
+            list.innerHTML = "";
+
+            if (data.length === 1) {
+                renderOneCountry(data[0])
+            } else {
+                const el = data.map(item => `<li>${item.name.common}</li>`).join('');
+                list.insertAdjacentHTML('beforeend', el)
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            list.innerHTML = '<li>збігів немає</li>';
+        })
 }
 
-async function loadImages() {
-    const images = await fetchImages(currentPage);
-    images.forEach(image => {
-        const imgElement = document.createElement('img');
-        imgElement.src = image.webformatURL;
-        imgElement.alt = image.tags;
-        imageGallery.appendChild(imgElement);
-    });
-    currentPage++;
-}
+function renderOneCountry(country) {
+    const languages = Object.values(country.languages).join(', ');
+    const markup = `
+    <div class="country-card">
+      <h2 class="country-name">${country.name.common}</h2>
+       <div class="country-wrap">
+        <ul class="country-list">
+          <li class="country-item">Capital: ${country.capital}</li>
+          <li class="country-item">Population: ${country.population}</li>
+          <li class="country-item">Languges: ${languages}</li>
+         </ul>
+          <img src="${country.flags.png}" alt="${country.name.common}" class="country-flag">
+       </div>
+      </div>`;
+      list.innerHTML = markup;
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadImages();
-    loadMoreBtn.addEventListener('click', loadImages); 
-});
+}
