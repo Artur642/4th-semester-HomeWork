@@ -529,12 +529,17 @@
         <button id="load-more-btn" class="load-more">Завантажити ще</button>
       </div> -->
 
-  <div class="wrap">
+  <!-- <div class="wrap">
     <input type="text" id="country" placeholder="Введіть країну">
     <ul class="countries-list" id="countries-list"></ul>
-  </div>
+  </div> -->
+  <form class="search-form" id="search-form">
+    <input type="text" name="query" autocomplete="off" placeholder="Search images..." />
+  </form>
 
+  <ul class="gallery"></ul>
 
+  <button id="load-more" hidden>Load more</button>
 
 
   <script async src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>

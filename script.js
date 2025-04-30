@@ -687,56 +687,130 @@
 
 
 //hw16
-const countryInput = document.getElementById("country");
-const list = document.getElementById("countries-list");
+// const countryInput = document.getElementById("country");
+// const list = document.getElementById("countries-list");
 
-countryInput.addEventListener('input', _.debounce(() => {
-    const country = countryInput.value.trim();
-    if (country.length < 2) {
-        alert('Введіть більше символів');
-        return;
+// countryInput.addEventListener('input', _.debounce(() => {
+//     const country = countryInput.value.trim();
+//     if (country.length < 2) {
+//         alert('Введіть більше символів');
+//         return;
+//     }
+//     renderCountry(country);
+// }, 1000))
+
+// function renderCountry(country) {
+//     fetch(`https://restcountries.com/v3.1/name/${country}`)
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Такої країни не існує')
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             list.innerHTML = "";
+
+//             if (data.length === 1) {
+//                 renderOneCountry(data[0])
+//             } else {
+//                 const el = data.map(item => `<li>${item.name.common}</li>`).join('');
+//                 list.insertAdjacentHTML('beforeend', el)
+//             }
+//         })
+//         .catch(error => {
+//             console.log(error);
+//             list.innerHTML = '<li>збігів немає</li>';
+//         })
+// }
+
+// function renderOneCountry(country) {
+//     const languages = Object.values(country.languages).join(', ');
+//     const markup = `
+//     <div class="country-card">
+//       <h2 class="country-name">${country.name.common}</h2>
+//        <div class="country-wrap">
+//         <ul class="country-list">
+//           <li class="country-item">Capital: ${country.capital}</li>
+//           <li class="country-item">Population: ${country.population}</li>
+//           <li class="country-item">Languges: ${languages}</li>
+//          </ul>
+//           <img src="${country.flags.png}" alt="${country.name.common}" class="country-flag">
+//        </div>
+//       </div>`;
+//       list.innerHTML = markup;
+
+// }
+
+const API_KEY = 'VkBEt0fFcAqySchZPLKAbH98ntFa7ext';
+const BASE_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?apikey=VkBEt0fFcAqySchZPLKAbH98ntFa7ext';
+const form = document.getElementById('search-form');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.getElementById('load-more');
+
+let query = '';
+let page = 1;
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  query = e.target.query.value.trim();
+  if (!query) return;
+  page = 1;
+  gallery.innerHTML = '';
+  await fetchImages();
+});
+
+loadMoreBtn.addEventListener('click', async () => {
+  page++;
+  await fetchImages(true);
+});
+
+async function fetchImages(append = false) {
+  try {
+    const url = `${BASE_URL}?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&page=${page}&per_page=12`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.hits.length) {
+      loadMoreBtn.hidden = true;
+      alert('No images found!');
+      return;
     }
-    renderCountry(country);
-}, 1000))
 
-function renderCountry(country) {
-    fetch(`https://restcountries.com/v3.1/name/${country}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Такої країни не існує')
-            }
-            return response.json();
-        })
-        .then(data => {
-            list.innerHTML = "";
+    renderImages(data.hits);
+    loadMoreBtn.hidden = false;
 
-            if (data.length === 1) {
-                renderOneCountry(data[0])
-            } else {
-                const el = data.map(item => `<li>${item.name.common}</li>`).join('');
-                list.insertAdjacentHTML('beforeend', el)
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            list.innerHTML = '<li>збігів немає</li>';
-        })
+    if (append) {
+      document.querySelector('.gallery li:last-child').scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    }
+
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    alert('Error fetching images!');
+  }
 }
 
-function renderOneCountry(country) {
-    const languages = Object.values(country.languages).join(', ');
-    const markup = `
-    <div class="country-card">
-      <h2 class="country-name">${country.name.common}</h2>
-       <div class="country-wrap">
-        <ul class="country-list">
-          <li class="country-item">Capital: ${country.capital}</li>
-          <li class="country-item">Population: ${country.population}</li>
-          <li class="country-item">Languges: ${languages}</li>
-         </ul>
-          <img src="${country.flags.png}" alt="${country.name.common}" class="country-flag">
-       </div>
-      </div>`;
-      list.innerHTML = markup;
+function renderImages(images) {
+  const markup = images.map(img => `
+    <li>
+      <div class="photo-card">
+        <img src="${img.webformatURL}" alt="${img.tags}" data-large="${img.largeImageURL}" />
+        <div class="stats">
+          <p class="stats-item"><i class="material-icons">thumb_up</i> ${img.likes}</p>
+          <p class="stats-item"><i class="material-icons">visibility</i> ${img.views}</p>
+          <p class="stats-item"><i class="material-icons">comment</i> ${img.comments}</p>
+          <p class="stats-item"><i class="material-icons">cloud_download</i> ${img.downloads}</p>
+        </div>
+      </div>
+    </li>
+  `).join('');
+  gallery.insertAdjacentHTML('beforeend', markup);
 
+  document.querySelectorAll('.photo-card img').forEach(img => {
+    img.addEventListener('click', () => {
+      basicLightbox.create(`<img src="${img.dataset.large}" />`).show();
+    });
+  });
 }
